@@ -7,25 +7,46 @@ function App() {
   const [people, setPeople] = useState(data)
   const [index, setIndex] = useState(0)
 
-  return <section>
+  // if index < 0 make it last index
+  useEffect(()=> {
+    let lastIndex = people.length -1
+    if (index < 0) {
+      setIndex(lastIndex)
+    }
+    if (index > lastIndex) {
+      setIndex(0)
+    }
+  })
+
+  return <section className="section">
     <div className="title">
       <h2>
         <span>/</span>reviews
       </h2>
     </div>
+    {/* people visibility */}
     <div className="section-center">
-      {data.map((person, personIndex) => {
+      {people.map((person, personIndex) => {
         const { id, image, name, title, quote } = person
-        return <article key={id}>
-          <img src={image} className="person-img" />
-          <article>
-            <h4>{name}</h4>
-          </article>
+        // applying slider classes; imagine a moveable viewport(personIndex) and a filmstrip(index)
+        let position = 'nextSlide'  // default all to the left of center display
+        if (personIndex == index) { // if there is overlap in center, show slide as active
+          position = 'activeSlide'
+        }
+        if (personIndex == index -1 || (index == 0 && personIndex == people.length -1)) { // if filmstrip advanced by 1 frame or viewport shifted to right by 1 frame
+          position = 'lastSlide'  // then position is to the right of center display
+        }
+
+        return <article key={id} className={position}>
+          <img src={image} className="person-img" alt={name}/>       
+            <h4>{name}</h4>        
           <p className="title">{title}</p>
           <p className="text">{quote}</p>
           <FaQuoteRight className="icon" />
         </article>
       })}
+      <button className="prev" onClick={()=> setIndex(index -1)} ><FiChevronLeft /></button>
+      <button className="next" onClick={()=> setIndex(index +1)}><FiChevronRight/></button>
     </div>
   </section>;
 }
