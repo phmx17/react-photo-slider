@@ -7,7 +7,7 @@ function App() {
   const [people, setPeople] = useState(data)
   const [index, setIndex] = useState(0)
 
-  // if index < 0 make it last index
+  // cycling: if index < 0 make it last index and vice versa
   useEffect(()=> {
     let lastIndex = people.length -1
     if (index < 0) {
@@ -17,6 +17,14 @@ function App() {
       setIndex(0)
     }
   })
+
+  // add timer to advance every 3 seconds
+  useEffect(()=> {
+    let slider = setInterval(()=> {
+      setIndex(index +1)
+    }, 3000)
+    return ()=> clearInterval(slider) // clear the timer, otherwise new timers get added when clicking on prev and next
+  }, [index])
 
   return <section className="section">
     <div className="title">
